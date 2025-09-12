@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <cctype>
+#include <fstream>
 
 struct Data{
     std::string title;
@@ -13,6 +14,9 @@ void addData(std::vector<Data>&transaction);
 void printData(std::vector<Data>&transaction,int choice);
 void summary(std::vector<Data>&transaction);
 bool dataValidate(const std::string &date);
+void saveToFile(const std::vector<Data>&transaction, std::string filename);
+void loadFromFile(const std::vector<Data>&transaction, std::string filename);
+
 
 int main() {
 
@@ -136,3 +140,27 @@ bool dataValidate(const std::string &date) {
         return true;
     }
 }
+
+/*void saveToFile(const std::vector<Data>&transaction, std::string filename) {
+    std::ofstream file(filename);
+    if(!file) {
+        std::cerr << "Error, file not found!\n" ;
+        return;
+    }
+    for(const auto& t : transaction) {
+        file << t.title << "," << t.value << "," << t.date << "\n";
+    }
+
+    file.close();
+    std::cout << "Data saved to " << filename << "\n";
+}
+void loadFromFile(std::vector<Data>&transaction, std::string filename) {
+    std::ifstream file(filename);
+    if(!file) {
+        std::cerr << "Error, file not found!\n";
+        return;
+    }
+    transaction.clear();
+    std::string line;
+  
+}*/
