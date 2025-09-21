@@ -22,7 +22,7 @@ int main() {
     roomsList(rooms);
     int choice;
     while(true) {
-        std::cout << "\tReservation Manager\n1.View rooms info\n2. Book room\n3.\n0.Exit\n>>";
+        std::cout << "\tReservation Manager\n1.View rooms info\n2. Book room\n3.Cancel Booking\n0.Exit\n>>";
         std::cin >> choice;
         switch(choice) {
             case 1: {
@@ -31,6 +31,10 @@ int main() {
             }
             case 2:{
                 bookRoom(rooms);
+                break;
+            }
+            case 3:{
+                cancelBooking(rooms);
                 break;
             }
             case 0: {
@@ -50,20 +54,23 @@ void roomsInfo(const std::vector<Room>&rooms, int option) {
     for(auto i : rooms) {
         if(option == 2 && !i.isBooked) {
 
-            std::cout << i.number << "\n";
-            std::cout << (i.isBooked ? "Booked\n" : "Free\n" );
-            std::cout << i.clientName << "\n\n";
+            std::cout << "Room number : " << i.number << "\n";
+            std::cout << "Status : " << (i.isBooked ? "Booked\n" : "Free\n" );
+            std::cout << "Client name : " << i.clientName << "\n";
+            std::cout << "Description : " << i.description << "\n\n";
 
         }
         else if(option == 1) {
-            std::cout << i.number << "\n";
-            std::cout << (i.isBooked ? "Booked\n" : "Free\n" );
-            std::cout << i.clientName << "\n\n";
+            std::cout  << "Room number : " << i.number << "\n";
+            std::cout << "Status : " << (i.isBooked ? "Booked\n" : "Free\n" );
+            std::cout << "Client name : "<< i.clientName << "\n";
+            std::cout  << "Description : "<< i.description << "\n\n";
         }
         else if(option == 3 && i.isBooked) {
-            std::cout << i.number << "\n";
-            std::cout << (i.isBooked ? "Booked\n" : "Free\n" );
-            std::cout << i.clientName << "\n\n";
+            std::cout << "Room number : "  << i.number << "\n";
+            std::cout << "Status : " << (i.isBooked ? "Booked\n" : "Free\n" );
+            std::cout << "Client name : "<< i.clientName << "\n";
+            std::cout  << "Description : "<< i.description << "\n\n";
         }
     }
     std::cout << "\n******************Press button*********************\n\n";
@@ -75,6 +82,7 @@ void roomsList(std::vector<Room>&rooms) {
         newRoom.clientName = "None";
         newRoom.number = i+1;   
         newRoom.isBooked = false;
+        newRoom.description = "Room is empty";
         rooms.push_back(newRoom);
     }
     
@@ -89,15 +97,14 @@ void bookRoom(std::vector<Room>&rooms){
     roomNumber = roomNumber - 1;
 
 
-    if(!rooms[roomNumber].isBooked && (roomNumber >= 0 && roomNumber <rooms.size())) {
+    if((roomNumber >= 0 && roomNumber <rooms.size()) && !rooms[roomNumber].isBooked ) {
         std::string name;
         std::string description;
         std::cout << "Enter client name : \n >>";
         std::cin.ignore();
         std::getline(std::cin, name);
         
-        std::cout << "Add descryption\n>>";
-        std::cin.ignore();
+        std::cout << "Add description\n>>";
         std::getline(std::cin, description);
         rooms[roomNumber].clientName = name;
         rooms[roomNumber].description = description;
@@ -112,5 +119,21 @@ void bookRoom(std::vector<Room>&rooms){
 
 }
 void cancelBooking(std::vector<Room>&rooms) {
-
+    static int option = 3;
+    int roomNumber;
+    roomsInfo(rooms, option);
+    std::cout << "Select room\n>>";
+    std::cin >> roomNumber;
+    roomNumber -= 1;
+    if((roomNumber >= 0 && roomNumber <rooms.size()) && rooms[roomNumber].isBooked)
+    {
+        rooms[roomNumber].clientName = "None";
+        rooms[roomNumber].description = "Room is empty";
+        rooms[roomNumber].isBooked = false;
+    }
+     else {
+        std::cout << "Wrong room number, or room is free.";
+    }
+     std::cout << "\n******************Press button*********************\n\n";
+    getchar();
 }
