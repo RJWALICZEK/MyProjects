@@ -4,6 +4,7 @@
 #include <ctime>
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 struct Room{
     std::string clientName;
@@ -18,6 +19,7 @@ void bookRoom(std::vector<Room>&rooms);
 void cancelBooking(std::vector<Room>&rooms);
 void saveToFile(const std::vector<Room>&rooms);
 void loadFromFile(std::vector<Room> &rooms);
+void showHotelSummary(std::vector<Room>&rooms);
 
 int main() {
 
@@ -25,7 +27,8 @@ int main() {
     roomsList(rooms);
     int choice;
     while(true) {
-        std::cout << "\tReservation Manager\n1.View rooms info\n2. Book room\n3.Cancel Booking\n4.Save room status\n5.Load room status\n0.Exit\n>>";
+        showHotelSummary(rooms);
+        std::cout << "\n\tReservation Manager\n1.View rooms info\n2. Book room\n3.Cancel Booking\n4.Save room status\n5.Load room status\n0.Exit\n>>";
         std::cin >> choice;
         switch(choice) {
             case 1: {
@@ -62,6 +65,7 @@ int main() {
 }
 
 void roomsInfo(const std::vector<Room>&rooms, int option) {
+    std::cout << "\n****************** Rooms info *********************\n\n";
     for(auto i : rooms) {
         if(option == 2 && !i.isBooked) {
 
@@ -148,7 +152,11 @@ void cancelBooking(std::vector<Room>&rooms) {
     getchar();
 }
 void saveToFile(const std::vector<Room> &rooms) {
-    std::ofstream file("data/room_state.json");
+    if(!std::filesystem::exists("data")) {
+        std::filesystem::create_directories("data");
+        std::cout << "\ndirectory 'data' created\n";
+    }
+    std::ofstream file("data/room_state.csv");
     if(!file) {
         std::cerr << "\n******************Can't find file!*********************\n\n";
         return;
@@ -176,7 +184,7 @@ void loadFromFile(std::vector<Room> &rooms) {
 
         }
     }
-    std::ifstream file("data/room_state.json");
+    std::ifstream file("data/room_state.csv");
     if(!file) {
         std::cerr << "\n*********************Can't find file!*********************\n\n";
         return;
@@ -216,4 +224,19 @@ void loadFromFile(std::vector<Room> &rooms) {
     std::cout << "Room status load succesfull!\n";
     getchar();
 
+}
+void showHotelSummary(std::vector<Room>&rooms) {
+    unsigned int free = 0;
+    unsigned int booked = 0;
+    unsigned int sumOfRooms = 0;
+    for(auto r : rooms) {
+        if(r.isBooked) {
+            booked++;
+        }
+        else {
+            free++;
+        }
+        sumOfRooms++;
+    }
+    std::cout << "\n| Rooms : " << sumOfRooms << " | Booked : " << booked << " | free : " << free << "\n";
 }
